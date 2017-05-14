@@ -13,6 +13,33 @@ public class J1HW3 {
 
     public static void main(String[] args){
 
+        System.out.println("What game you choice?");
+        System.out.println("If game 'Guess number' input '1'");
+        System.out.println("If game 'Guess word' input '2'");
+        Scanner sc = new Scanner(System.in);
+
+        int choice;
+        do {
+            choice = sc.nextInt();
+        } while (choice < 1 || choice > 2);
+
+        switch (choice) {
+            case 1:
+                GuessNumber game_gn = new GuessNumber();
+                game_gn.gameRun();
+                break;
+            case 2:
+                GuessWord game_gw = new GuessWord();
+                game_gw.gameRun();
+        }
+    }
+}
+
+
+class GuessNumber {
+
+    void gameRun() {
+
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 //        Ведется счёт между циклами игр:
@@ -124,5 +151,29 @@ public class J1HW3 {
                 break;
             }
         }
+    }
+}
+
+
+class GuessWord {
+
+    void gameRun() {
+
+        String[] words = {"apple", "orange", "lemon", "banana", "apricot",
+                "avocado", "broccoli", "carrot", "cherry", "garlic", "grape",
+                "melon", "leak", "kiwi", "mango", "mushroom", "nut", "olive",
+                "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin",
+                "potato"};
+//        System.out.println(Arrays.toString(words));     // Отладочное сообщение;
+
+        Random random = new Random();
+        Scanner scanner = new Scanner(System.in);
+
+        int word_num = random.nextInt(words.length);
+
+        System.out.print("Input your word: ");
+        String answer = scanner.nextLine();
+//        System.out.print(answer);   // Отладочное сообщение;
+
     }
 }
