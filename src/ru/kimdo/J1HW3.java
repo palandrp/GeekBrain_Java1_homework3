@@ -3,6 +3,8 @@ package ru.kimdo;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Pavel Petrikovskiy
@@ -12,6 +14,33 @@ import java.util.Scanner;
 public class J1HW3 {
 
     public static void main(String[] args){
+
+        System.out.println("What game you choice?");
+        System.out.println("If game 'Guess number' input '1'");
+        System.out.println("If game 'Guess word' input '2'");
+        Scanner sc = new Scanner(System.in);
+
+        int choice;
+        do {
+            choice = sc.nextInt();
+        } while (choice < 1 || choice > 2);
+
+        switch (choice) {
+            case 1:
+                GuessNumber game_gn = new GuessNumber();
+                game_gn.gameRun();
+                break;
+            case 2:
+                GuessWord game_gw = new GuessWord();
+                game_gw.gameRun();
+        }
+    }
+}
+
+
+class GuessNumber {
+
+    void gameRun() {
 
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
@@ -34,7 +63,6 @@ public class J1HW3 {
                 guess = scanner.nextInt();
                 result[game] = guess;     // Отправляем попытку в память;
             }
-//            System.out.println(Arrays.toString(result));       // Это отладочное сообщение;
 
             game = 1;
             do {
@@ -62,7 +90,6 @@ public class J1HW3 {
                         } else i++;       // цикл, после неверного ввода проверять значения с начала;
                     }
                     result[game] = guess;
-//                    System.out.println(Arrays.toString(result));    // Отладочное сообщение;
                     if (guess == number){
                         System.out.println("You win!");
                         System.out.printf("It was %d!\n", number);
@@ -88,7 +115,6 @@ public class J1HW3 {
                         } else i++;
                     }
                     result[game] = guess;
-//                    System.out.println(Arrays.toString(result));     // Отладочное сообщение;
                     if (guess == number){
                         System.out.println("You win!");
                         System.out.printf("It was %d!\n", number);
@@ -126,3 +152,65 @@ public class J1HW3 {
         }
     }
 }
+
+
+class GuessWord {
+
+    void gameRun() {
+
+        String[] words = {"apple", "orange", "lemon", "banana", "apricot",
+                "avocado", "broccoli", "carrot", "cherry", "garlic", "grape",
+                "melon", "leak", "kiwi", "mango", "mushroom", "nut", "olive",
+                "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin",
+                "potato"};
+
+        Random random = new Random();
+        Scanner scanner = new Scanner(System.in);
+
+        int word_num = random.nextInt(words.length);    // Загадываем слово;
+        boolean lose;
+        String answer;
+        Pattern pattern = Pattern.compile("[A-Z]+");
+        Matcher matcher;           // Используем паттерн для отлова верхнего регистра;
+        boolean error;
+
+        while (true) {
+            System.out.print("Input your word: ");
+            do {
+                answer = scanner.nextLine();
+                matcher = pattern.matcher(answer);
+                error = matcher.find();
+                if (error)
+                    System.out.println("Type in lower case please!");
+            } while (error);         // Пока есть верхний регистр цикл будет мучить юзера;
+
+            lose = false;      // В начале игрового цикла флаг "проигрыша" снимается;
+            int i = 0;
+            do {
+                try {
+                    if (words[word_num].charAt(i) == answer.charAt(i)) {
+                        System.out.print(answer.charAt(i));
+                    } else {
+                        System.out.print("#");
+                        lose = true;     // Если есть хоть одна неточность, то установится флаг
+                    }                    // "проигрыша" - повторения итерации игрового цикла;
+                } catch (StringIndexOutOfBoundsException e) {
+                    System.out.print("#");            // Отлавливаем: когда ответ меньше, чем
+                    lose = true;                      // загаданное слово, адрес ответа выходит за
+                    break;                            // границы массива;
+                }
+                i++;
+            } while (i < words[word_num].length());
+
+            if (lose) {
+                System.out.print("###############\n");
+                System.out.print("\nMake another choice!\n");
+            } else {
+                System.out.print("\nYou win!");
+                break;           // Если в конце цикла флаг не установлен, значит несовпадения
+            }                    // отсутствуют, значит победа и выходим из игрового цикла;
+        }
+    }
+}
+//            Теперь напишу брутфорсер для этой игры,
+//            надоело вводить букавки самому :)
