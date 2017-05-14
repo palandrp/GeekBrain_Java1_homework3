@@ -3,6 +3,8 @@ package ru.kimdo;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Pavel Petrikovskiy
@@ -61,7 +63,6 @@ class GuessNumber {
                 guess = scanner.nextInt();
                 result[game] = guess;     // Отправляем попытку в память;
             }
-//            System.out.println(Arrays.toString(result));       // Это отладочное сообщение;
 
             game = 1;
             do {
@@ -89,7 +90,6 @@ class GuessNumber {
                         } else i++;       // цикл, после неверного ввода проверять значения с начала;
                     }
                     result[game] = guess;
-//                    System.out.println(Arrays.toString(result));    // Отладочное сообщение;
                     if (guess == number){
                         System.out.println("You win!");
                         System.out.printf("It was %d!\n", number);
@@ -115,7 +115,6 @@ class GuessNumber {
                         } else i++;
                     }
                     result[game] = guess;
-//                    System.out.println(Arrays.toString(result));     // Отладочное сообщение;
                     if (guess == number){
                         System.out.println("You win!");
                         System.out.printf("It was %d!\n", number);
@@ -164,16 +163,54 @@ class GuessWord {
                 "melon", "leak", "kiwi", "mango", "mushroom", "nut", "olive",
                 "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin",
                 "potato"};
-//        System.out.println(Arrays.toString(words));     // Отладочное сообщение;
 
         Random random = new Random();
         Scanner scanner = new Scanner(System.in);
 
-        int word_num = random.nextInt(words.length);
+        int word_num = random.nextInt(words.length);    // Загадываем слово;
+        boolean lose;
+        String answer;
+        Pattern pattern = Pattern.compile("[A-Z]+");
+        Matcher matcher;           // Используем паттерн для отлова верхнего регистра;
+        boolean error;
 
-        System.out.print("Input your word: ");
-        String answer = scanner.nextLine();
-//        System.out.print(answer);   // Отладочное сообщение;
+        while (true) {
+            System.out.print("Input your word: ");
+            do {
+                answer = scanner.nextLine();
+                matcher = pattern.matcher(answer);
+                error = matcher.find();
+                if (error)
+                    System.out.println("Type in lower case please!");
+            } while (error);         // Пока есть верхний регистр цикл будет мучить юзера;
 
+            lose = false;      // В начале игрового цикла флаг "проигрыша" снимается;
+            int i = 0;
+            do {
+                try {
+                    if (words[word_num].charAt(i) == answer.charAt(i)) {
+                        System.out.print(answer.charAt(i));
+                    } else {
+                        System.out.print("#");
+                        lose = true;     // Если есть хоть одна неточность, то установится флаг
+                    }                    // "проигрыша" - повторения итерации игрового цикла;
+                } catch (StringIndexOutOfBoundsException e) {
+                    System.out.print("#");            // Отлавливаем: когда ответ меньше, чем
+                    lose = true;                      // загаданное слово, адрес ответа выходит за
+                    break;                            // границы массива;
+                }
+                i++;
+            } while (i < words[word_num].length());
+
+            if (lose) {
+                System.out.print("###############\n");
+                System.out.print("\nMake another choice!\n");
+            } else {
+                System.out.print("\nYou win!");
+                break;           // Если в конце цикла флаг не установлен, значит несовпадения
+            }                    // отсутствуют, значит победа и выходим из игрового цикла;
+        }
     }
 }
+//            Теперь напишу брутфорсер для этой игры,
+//            надоело вводить букавки самому :)
