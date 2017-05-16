@@ -1,6 +1,7 @@
 package ru.kimdo;
 
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -20,9 +21,14 @@ public class J1HW3 {
         System.out.println("If game 'Guess word' input '2'");
         Scanner sc = new Scanner(System.in);
 
-        int choice;
+        int choice = -1;
         do {
-            choice = sc.nextInt();
+            try {
+                choice = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Input 1 or 2:");
+                sc.next();
+            }
         } while (choice < 1 || choice > 2);
 
         switch (choice) {
@@ -142,7 +148,12 @@ class GuessNumber {
             while (play < 0 || play > 1) {
                 System.out.printf("Your score: %d\n", score);
                 System.out.println("Play again? Yes: 1; No: 0");
-                play = scanner.nextInt();
+                try {
+                    play = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Input 1 or 0:");
+                    scanner.next();
+                }
             }
 
             if (play == 0) {
@@ -170,7 +181,7 @@ class GuessWord {
         int word_num = random.nextInt(words.length);    // Загадываем слово;
         boolean lose;
         String answer;
-        Pattern pattern = Pattern.compile("[A-Z]+");
+        Pattern pattern = Pattern.compile("[A-Z0-9]+");
         Matcher matcher;           // Используем паттерн для отлова верхнего регистра;
         boolean error;
 
@@ -181,7 +192,7 @@ class GuessWord {
                 matcher = pattern.matcher(answer);
                 error = matcher.find();
                 if (error)
-                    System.out.println("Type in lower case please!");
+                    System.out.println("Type in lower case please! And not numbers!");
             } while (error);         // Пока есть верхний регистр цикл будет мучить юзера;
 
             lose = false;      // В начале игрового цикла флаг "проигрыша" снимается;
@@ -206,7 +217,7 @@ class GuessWord {
                 System.out.print("###############\n");
                 System.out.print("\nMake another choice!\n");
             } else {
-                System.out.print("\nYou win!");
+                System.out.print("\nYou win!\n");
                 break;           // Если в конце цикла флаг не установлен, значит несовпадения
             }                    // отсутствуют, значит победа и выходим из игрового цикла;
         }
