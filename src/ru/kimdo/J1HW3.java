@@ -13,24 +13,25 @@ import java.util.regex.Pattern;
  */
 
 public class J1HW3 {
-
+    
     public static void main(String[] args){
-
+        
         System.out.println("What game you choice?");
         System.out.println("If game 'Guess number' input '1'");
         System.out.println("If game 'Guess word' input '2'");
         Scanner sc = new Scanner(System.in);
-
+        
         int choice = -1;
         do {
             try {
                 choice = sc.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Input 1 or 2:");
-                sc.next();
+                sc.next();      //обнуляем наличие объекта e, чтобы try снова начал
+                //обрабатываться;
             }
         } while (choice < 1 || choice > 2);
-
+        
         switch (choice) {
             case 1:
                 GuessNumber game_gn = new GuessNumber();
@@ -45,31 +46,31 @@ public class J1HW3 {
 
 
 class GuessNumber {
-
+    
     void gameRun() {
-
+        
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
-//        Ведется счёт между циклами игр:
+        //        Ведется счёт между циклами игр:
         int score = 0;
-
+        
         while (true) {
-
+            
             int number = random.nextInt(10);
             int guess = -1;
             boolean win = false;
-//            Этот массив для функционала проверки, что значение
-//              еще не вводилось в игровом цикле:
+            //            Этот массив для функционала проверки, что значение
+            //              еще не вводилось в игровом цикле:
             int[] result = new int[3];
             Arrays.fill(result, -1);
             int game = 0;            // Счетчик попыток угадывания;
-
+            
             while (guess < 0 || guess > 9) {
                 System.out.print("Make your choice! Input the number from 0 to 9: ");
                 guess = scanner.nextInt();
                 result[game] = guess;     // Отправляем попытку в память;
             }
-
+            
             game = 1;
             do {
                 if (guess == number){
@@ -131,19 +132,19 @@ class GuessNumber {
                 }
                 game++;
             } while (game != 3);
-
+            
             if (!win) {
                 score--;        // Если проигрыш, то счет уменьшается (даже в минус);
                 System.out.println("You lost! Overflow numbers of attempts!");
                 System.out.printf("It was %d!\n", number);
             }
-
+            
             if (score == 10) {      // В этой игре можно победить! :)))
                 System.out.println("You are the absolute winner!");
                 System.out.println("GOODBYE!");
                 break;
             }
-
+            
             int play = -1;
             while (play < 0 || play > 1) {
                 System.out.printf("Your score: %d\n", score);
@@ -155,7 +156,7 @@ class GuessNumber {
                     scanner.next();
                 }
             }
-
+            
             if (play == 0) {
                 System.out.print("Goodbye!");
                 break;
@@ -166,25 +167,25 @@ class GuessNumber {
 
 
 class GuessWord {
-
+    
     void gameRun() {
-
+        
         String[] words = {"apple", "orange", "lemon", "banana", "apricot",
-                "avocado", "broccoli", "carrot", "cherry", "garlic", "grape",
-                "melon", "leak", "kiwi", "mango", "mushroom", "nut", "olive",
-                "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin",
-                "potato"};
-
+            "avocado", "broccoli", "carrot", "cherry", "garlic", "grape",
+            "melon", "leak", "kiwi", "mango", "mushroom", "nut", "olive",
+            "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin",
+            "potato"};
+        
         Random random = new Random();
         Scanner scanner = new Scanner(System.in);
-
+        
         int word_num = random.nextInt(words.length);    // Загадываем слово;
         boolean lose;
         String answer;
         Pattern pattern = Pattern.compile("[A-Z0-9]+");
         Matcher matcher;           // Используем паттерн для отлова верхнего регистра;
         boolean error;
-
+        
         while (true) {
             System.out.print("Input your word: ");
             do {
@@ -194,7 +195,7 @@ class GuessWord {
                 if (error)
                     System.out.println("Type in lower case please! And not numbers!");
             } while (error);         // Пока есть верхний регистр цикл будет мучить юзера;
-
+            
             lose = false;      // В начале игрового цикла флаг "проигрыша" снимается;
             int i = 0;
             do {
@@ -212,7 +213,7 @@ class GuessWord {
                 }
                 i++;
             } while (i < words[word_num].length());
-
+            
             if (lose) {
                 System.out.print("###############\n");
                 System.out.print("\nMake another choice!\n");
